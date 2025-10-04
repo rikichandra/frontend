@@ -23,8 +23,8 @@ export const API_ENDPOINTS = {
   PRODUCT_BY_ID: (id: string) => `/produks/${id}`,
   
   // Transaction endpoints
-  TRANSACTIONS: '/transactions',
-  TRANSACTION_BY_ID: (id: string) => `/transactions/${id}`,
+  TRANSACTIONS: '/transaksis',
+  TRANSACTION_BY_ID: (id: string) => `/transaksis/${id}`,
 } as const;
 
 // API Response Types

@@ -41,15 +41,14 @@ export const productSchema = z.object({
 
 // Transaction Validators
 export const transactionSchema = z.object({
-  customerId: z.string().min(1, 'Customer is required'),
-  items: z.array(z.object({
-    productId: z.string().min(1, 'Product is required'),
-    quantity: z.number().int().positive('Quantity must be positive'),
-    price: z.number().positive('Price must be positive'),
-  })).min(1, 'At least one item is required'),
-  totalAmount: z.number().positive('Total amount must be positive'),
-  paymentMethod: z.enum(['cash', 'card', 'bank_transfer']),
-  status: z.enum(['pending', 'completed', 'cancelled']).default('pending'),
+  jenis_transaksi: z.enum(['in', 'out'], {
+    message: 'Transaction type must be either "in" or "out"',
+  }),
+  catatan_transaksi: z.string().optional(),
+  produk: z.array(z.object({
+    produk_id: z.number().positive('Product is required'),
+    jumlah_produk: z.number().int().positive('Quantity must be positive'),
+  })).min(1, 'At least one product is required'),
 });
 
 // Type exports
@@ -59,3 +58,22 @@ export type AdminInput = z.infer<typeof adminSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type ProductInput = z.infer<typeof productSchema>;
 export type TransactionInput = z.infer<typeof transactionSchema>;
+
+// Transaction response type from API
+export interface Transaction {
+  id: number;
+  jenis_transaksi: 'in' | 'out';
+  user_id: number;
+  produk: Array<{
+    produk_id: number;
+    jumlah_produk: number;
+    nama_produk: string;
+  }>;
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  created_at: string;
+  updated_at: string;
+}

@@ -89,6 +89,9 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
+  // Add debugging log
+  console.log('DataTable render - data length:', data.length, 'loading:', loading);
+
   // Defensive check for columns
   const safeColumns = React.useMemo(() => {
     return columns || []
