@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/store/auth.store';
@@ -11,10 +12,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function RegisterPage() {
-  const [name, setName] = useState('');
+  const [namaDepan, setNamaDepan] = useState('');
+  const [namaBelakang, setNamaBelakang] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [tanggalLahir, setTanggalLahir] = useState('');
+  const [jenisKelamin, setJenisKelamin] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuthStore();
@@ -33,28 +37,35 @@ export default function RegisterPage() {
 
     try {
       const response = await authService.register({
-        name,
+        nama_depan: namaDepan,
+        nama_belakang: namaBelakang,
         email,
         password,
         confirmPassword,
+        tanggal_lahir: tanggalLahir || null,
+        jenis_kelamin: jenisKelamin ? jenisKelamin as 'Laki-laki' | 'Perempuan' : null,
       });
 
       if (response.status) {
         // Map field names and store user data
         const userData = {
-          ...response.user,
-          createdAt: response.user.created_at,
-          updatedAt: response.user.updated_at,
+          id: response.data.id.toString(),
+          name: `${response.data.nama_depan} ${response.data.nama_belakang}`,
+          email: response.data.email,
+          role: 'user', // default role
+          createdAt: response.data.created_at,
+          updatedAt: response.data.updated_at,
         };
-        
-        login(userData, response.access_token, '');
-        document.cookie = `auth-token=${response.access_token}; path=/; max-age=86400; secure; samesite=strict`;
-        router.push('/dashboard');
+
+        console.log('Registration successful:', userData);
+
+        router.push('/login?message=Registration successful! Please login.');
       } else {
         throw new Error(response.message || 'Registration failed');
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
+      // Prioritize 'error' field from API response, then 'message', then fallback
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Registration failed';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -75,16 +86,50 @@ export default function RegisterPage() {
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="nama_depan">First Name</Label>
             <Input
-              id="name"
+              id="nama_depan"
               type="text"
-              placeholder="Enter your full name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your first name"
+              value={namaDepan}
+              onChange={(e) => setNamaDepan(e.target.value)}
               required
               disabled={isLoading}
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="nama_belakang">Last Name</Label>
+            <Input
+              id="nama_belakang"
+              type="text"
+              placeholder="Enter your last name"
+              value={namaBelakang}
+              onChange={(e) => setNamaBelakang(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="tanggal_lahir">Date of Birth</Label>
+            <Input
+              id="tanggal_lahir"
+              type="date"
+              value={tanggalLahir}
+              onChange={(e) => setTanggalLahir(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="jenis_kelamin">Gender</Label>
+            <Select value={jenisKelamin} onValueChange={setJenisKelamin} disabled={isLoading}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Laki-laki">Laki-laki</SelectItem>
+                <SelectItem value="Perempuan">Perempuan</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>

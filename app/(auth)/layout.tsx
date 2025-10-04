@@ -7,8 +7,8 @@ export default function AuthLayout({
 }) {
   return (
     <AuthGuard requireAuth={false}>
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full space-y-8">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="max-w-lg w-full space-y-8">
           {children}
         </div>
       </div>

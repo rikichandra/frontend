@@ -22,9 +22,16 @@ export interface LoginResponse {
 export interface RegisterResponse {
   status: boolean;
   message: string;
-  access_token: string;
-  token_type: string;
-  user: User;
+  data: {
+    id: number;
+    nama_depan: string;
+    nama_belakang: string;
+    email: string;
+    tanggal_lahir: string | null;
+    jenis_kelamin: string | null;
+    created_at: string;
+    updated_at: string;
+  };
 }
 
 export const authService = {

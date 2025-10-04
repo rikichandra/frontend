@@ -1,18 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthContext } from '@/components/AuthProvider';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const { login, isLoading } = useAuthContext();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const message = searchParams.get('message');
+    if (message) {
+      setSuccessMessage(message);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +31,8 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+      // Prioritize 'error' field from API response, then 'message', then fallback
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Login failed';
       setError(errorMessage);
     }
   };
@@ -35,6 +46,11 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {successMessage && (
+          <div className="mb-4 p-3 text-sm text-green-800 bg-green-100 border border-green-200 rounded-md">
+            {successMessage}
+          </div>
+        )}
         {error && (
           <div className="mb-4 p-3 text-sm text-red-800 bg-red-100 border border-red-200 rounded-md">
             {error}
