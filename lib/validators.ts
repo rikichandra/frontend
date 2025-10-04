@@ -51,6 +51,25 @@ export const transactionSchema = z.object({
   })).min(1, 'At least one product is required'),
 });
 
+// User Profile Validators
+export const userUpdateSchema = z.object({
+  nama_depan: z.string().max(255, 'First name must not exceed 255 characters').optional(),
+  nama_belakang: z.string().max(255, 'Last name must not exceed 255 characters').optional(),
+  email: z.string().email('Invalid email address').optional(),
+  password: z.string().min(8, 'Password must be at least 8 characters').optional(),
+  password_confirmation: z.string().optional(),
+  tanggal_lahir: z.string().optional(),
+  jenis_kelamin: z.enum(['Laki-laki', 'Perempuan']).optional(),
+}).refine((data) => {
+  if (data.password && data.password !== data.password_confirmation) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'Passwords do not match',
+  path: ['password_confirmation'],
+});
+
 // Type exports
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -58,6 +77,7 @@ export type AdminInput = z.infer<typeof adminSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type ProductInput = z.infer<typeof productSchema>;
 export type TransactionInput = z.infer<typeof transactionSchema>;
+export type UserUpdateInput = z.infer<typeof userUpdateSchema>;
 
 // Transaction response type from API
 export interface Transaction {
