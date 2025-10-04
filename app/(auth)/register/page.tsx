@@ -46,8 +46,7 @@ export default function RegisterPage() {
         jenis_kelamin: jenisKelamin ? jenisKelamin as 'Laki-laki' | 'Perempuan' : null,
       });
 
-      if (response.status) {
-        // Map field names and store user data
+      if (response.status) {        
         const userData = {
           id: response.data.id.toString(),
           name: `${response.data.nama_depan} ${response.data.nama_belakang}`,
@@ -63,8 +62,7 @@ export default function RegisterPage() {
       } else {
         throw new Error(response.message || 'Registration failed');
       }
-    } catch (error: any) {
-      // Prioritize 'error' field from API response, then 'message', then fallback
+    } catch (error: any) {      
       const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Registration failed';
       setError(errorMessage);
     } finally {
