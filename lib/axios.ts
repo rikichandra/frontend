@@ -2,10 +2,11 @@ import axios from 'axios';
 
 // Create axios instance
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
-  timeout: 10000,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 10000,  
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
 });
 
@@ -38,8 +39,19 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('auth-storage');
+      document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       window.location.href = '/login';
     }
+    
+    // Handle Laravel validation errors
+    if (error.response?.status === 422) {
+      const validationErrors = error.response.data.errors;
+      if (validationErrors) {
+        const firstError = Object.values(validationErrors)[0];
+        error.message = Array.isArray(firstError) ? firstError[0] : firstError;
+      }
+    }
+    
     return Promise.reject(error);
   }
 );

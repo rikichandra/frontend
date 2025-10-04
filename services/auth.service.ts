@@ -7,23 +7,33 @@ export interface User {
   name: string;
   email: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
-export interface AuthResponse {
+export interface LoginResponse {
+  status: boolean;
+  message: string;
+  access_token: string;
+  token_type: string;
   user: User;
-  token: string;
-  refreshToken: string;
+}
+
+export interface RegisterResponse {
+  status: boolean;
+  message: string;
+  access_token: string;
+  token_type: string;
+  user: User;
 }
 
 export const authService = {
-  async login(credentials: LoginInput): Promise<ApiResponse<AuthResponse>> {
+  async login(credentials: LoginInput): Promise<LoginResponse> {
     const response = await apiClient.post(API_ENDPOINTS.LOGIN, credentials);
     return response.data;
   },
 
-  async register(userData: RegisterInput): Promise<ApiResponse<AuthResponse>> {
+  async register(userData: RegisterInput): Promise<RegisterResponse> {
     const response = await apiClient.post(API_ENDPOINTS.REGISTER, userData);
     return response.data;
   },
