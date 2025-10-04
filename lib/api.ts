@@ -19,8 +19,8 @@ export const API_ENDPOINTS = {
   CATEGORY_BY_ID: (id: string) => `/kategori-produks/${id}`,
   
   // Product endpoints
-  PRODUCTS: '/products',
-  PRODUCT_BY_ID: (id: string) => `/products/${id}`,
+  PRODUCTS: '/produks',
+  PRODUCT_BY_ID: (id: string) => `/produks/${id}`,
   
   // Transaction endpoints
   TRANSACTIONS: '/transactions',

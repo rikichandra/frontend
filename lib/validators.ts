@@ -32,13 +32,11 @@ export const categorySchema = z.object({
 
 // Product Validators
 export const productSchema = z.object({
-  name: z.string().min(2, 'Product name must be at least 2 characters'),
-  description: z.string().optional(),
-  price: z.number().positive('Price must be positive'),
-  categoryId: z.string().min(1, 'Category is required'),
-  stock: z.number().int().min(0, 'Stock cannot be negative'),
-  sku: z.string().min(1, 'SKU is required'),
-  isActive: z.boolean().default(true),
+  kategori_produk_id: z.number().positive('Category is required'),
+  nama_produk: z.string().min(2, 'Product name must be at least 2 characters'),
+  deskripsi_produk: z.string().optional(),
+  stok_produk: z.number().int().min(0, 'Stock cannot be negative'),
+  gambar_produk: z.any().optional(), // For file upload
 });
 
 // Transaction Validators
