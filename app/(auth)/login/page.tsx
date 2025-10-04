@@ -30,8 +30,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-    } catch (error: any) {
-      // Prioritize 'error' field from API response, then 'message', then fallback
+    } catch (error: any) {      
       const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Login failed';
       setError(errorMessage);
     }
