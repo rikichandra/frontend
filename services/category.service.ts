@@ -3,20 +3,17 @@ import { API_ENDPOINTS, ApiResponse, PaginatedResponse } from '@/lib/api';
 import { CategoryInput } from '@/lib/validators';
 
 export interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  isActive: boolean;
-  productsCount: number;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  nama_kategori: string;
+  deskripsi_kategori?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CategoryFilters {
-  search?: string;
-  isActive?: boolean;
+  s?: string;           // search parameter as used in backend
+  per_page?: number;    // pagination parameter as used in backend
   page?: number;
-  limit?: number;
 }
 
 export const categoryService = {
@@ -25,8 +22,8 @@ export const categoryService = {
     return response.data;
   },
 
-  async getCategoryById(id: string): Promise<ApiResponse<Category>> {
-    const response = await apiClient.get(API_ENDPOINTS.CATEGORY_BY_ID(id));
+  async getCategoryById(id: number): Promise<ApiResponse<Category>> {
+    const response = await apiClient.get(API_ENDPOINTS.CATEGORY_BY_ID(id.toString()));
     return response.data;
   },
 
@@ -35,18 +32,13 @@ export const categoryService = {
     return response.data;
   },
 
-  async updateCategory(id: string, categoryData: Partial<CategoryInput>): Promise<ApiResponse<Category>> {
-    const response = await apiClient.put(API_ENDPOINTS.CATEGORY_BY_ID(id), categoryData);
+  async updateCategory(id: number, categoryData: Partial<CategoryInput>): Promise<ApiResponse<Category>> {
+    const response = await apiClient.put(API_ENDPOINTS.CATEGORY_BY_ID(id.toString()), categoryData);
     return response.data;
   },
 
-  async deleteCategory(id: string): Promise<ApiResponse<null>> {
-    const response = await apiClient.delete(API_ENDPOINTS.CATEGORY_BY_ID(id));
-    return response.data;
-  },
-
-  async toggleCategoryStatus(id: string): Promise<ApiResponse<Category>> {
-    const response = await apiClient.patch(`${API_ENDPOINTS.CATEGORY_BY_ID(id)}/toggle-status`);
+  async deleteCategory(id: number): Promise<ApiResponse<null>> {
+    const response = await apiClient.delete(API_ENDPOINTS.CATEGORY_BY_ID(id.toString()));
     return response.data;
   },
 };

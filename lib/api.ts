@@ -15,8 +15,8 @@ export const API_ENDPOINTS = {
   ADMIN_BY_ID: (id: string) => `/admins/${id}`,
   
   // Category endpoints
-  CATEGORIES: '/categories',
-  CATEGORY_BY_ID: (id: string) => `/categories/${id}`,
+  CATEGORIES: '/kategori-produks',
+  CATEGORY_BY_ID: (id: string) => `/kategori-produks/${id}`,
   
   // Product endpoints
   PRODUCTS: '/products',
@@ -29,19 +29,33 @@ export const API_ENDPOINTS = {
 
 // API Response Types
 export interface ApiResponse<T = any> {
-  success: boolean;
+  status: boolean;
   message: string;
   data: T;
+  error?: string;
 }
 
 export interface PaginatedResponse<T = any> {
-  success: boolean;
+  status: boolean;
   message: string;
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
+  data: {
+    current_page: number;
+    data: T[];
+    first_page_url: string;
+    from: number | null;
+    last_page: number;
+    last_page_url: string;
+    links: {
+      url: string | null;
+      label: string;
+      page: number | null;
+      active: boolean;
+    }[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number | null;
     total: number;
-    totalPages: number;
   };
 }

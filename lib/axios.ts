@@ -7,12 +7,16 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'ngrok-skip-browser-warning': 'true', // Skip ngrok browser warning
   },
 });
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
+    // Add ngrok header to all requests
+    config.headers['ngrok-skip-browser-warning'] = 'true';
+    
     // Get token from localStorage or your auth store
     const token = localStorage.getItem('auth-storage');
     if (token) {
@@ -36,6 +40,12 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle CORS errors
+    if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+      console.error('CORS Error: Check your backend CORS configuration');
+      error.message = 'Unable to connect to server. Please check your internet connection or contact support.';
+    }
+    
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('auth-storage');

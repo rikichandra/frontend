@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       authService.getProfile()
         .then((response) => {
-          if (response.success) {
+          if (response.status) {
             // Map field names to match frontend structure
             const userData = {
               ...response.data,

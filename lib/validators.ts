@@ -26,9 +26,8 @@ export const adminSchema = z.object({
 
 // Category Validators
 export const categorySchema = z.object({
-  name: z.string().min(2, 'Category name must be at least 2 characters'),
-  description: z.string().optional(),
-  isActive: z.boolean().default(true),
+  nama_kategori: z.string().min(2, 'Category name must be at least 2 characters'),
+  deskripsi_kategori: z.string().optional(),
 });
 
 // Product Validators
